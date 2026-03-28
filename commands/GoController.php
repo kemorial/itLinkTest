@@ -8,7 +8,9 @@
 
 namespace app\commands;
 
+use app\components\Doctrine;
 use app\domain\entities\Car;
+use Doctrine\ORM\EntityManagerInterface;
 use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
@@ -30,10 +32,15 @@ class GoController extends Controller
      */
     public function actionIndex()
     {
-        $entityManager = Yii::$app->doctrine->getEntityManager();
+        // $doctrine = Yii::$container->get(Doctrine::class);
+        // var_dump('Doctrine получен:', get_class($doctrine));
 
-        // Example: Find a user by ID
-        $car = $entityManager->find(Car::class, 1);
+        // // Проверяем EntityManager
+        // $em = Yii::$container->get(EntityManagerInterface::class);
+        // var_dump('EntityManager получен:', get_class($em));
+        $em = Yii::$container->get(EntityManagerInterface::class);
+
+        $car = $em->find(Car::class, 1);
         dd($car);
 
         // Example: Create and persist a new entity

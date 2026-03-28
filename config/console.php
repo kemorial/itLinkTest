@@ -1,5 +1,10 @@
 <?php
 
+use app\components\Doctrine;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\ORMSetup;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -15,19 +20,6 @@ $config = [
         '@entities' => '@app/domain/entities'
     ],
     'components' => [
-        'doctrine' => [
-            'class' => 'app\components\Doctrine',
-            'isDevMode' => YII_DEBUG,
-            'paths' => '@app/domain/entities',
-            'cache' => null,
-            'dbParams' => [
-                'driver' => 'pgsql',
-                'user' => 'postgres',
-                'password' => 'superPassword',
-                'dbname' => 'car_service',
-                'host' => 'database',
-            ],
-        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
@@ -41,29 +33,40 @@ $config = [
         ],
         'db' => $db,
     ],
-    'params' => $params,
-    /*
-    'controllerMap' => [
-        'fixture' => [ // Fixture generation command line.
-            'class' => 'yii\faker\FixtureController',
+    'container' => [
+        'singletons' => [
+            EntityManagerInterface::class => function () {
+                $paths = [Yii::getAlias('@app/domain/entities')];
+
+                $config = ORMSetup::createAttributeMetadataConfiguration(
+                    $paths,
+                    YII_DEBUG,
+                    Yii::getAlias('@runtime/doctrine/proxies')
+                );
+
+                $connection = [
+                    'driver' => 'pdo_pgsql',
+                    'user' => 'postgres',
+                    'password' => 'superPassword',
+                    'dbname' => 'car_service',
+                    'host' => 'database',
+                ];
+
+                return EntityManager::create($connection, $config);
+            },
         ],
     ],
-    */
+    'params' => $params,
 ];
 
 if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
     ];
-    // configuration adjustments for 'dev' environment
-    // requires version `2.1.21` of yii2-debug module
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
-        // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 }
 
