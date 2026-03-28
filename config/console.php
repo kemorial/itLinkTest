@@ -12,8 +12,22 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
         '@tests' => '@app/tests',
+        '@entities' => '@app/domain/entities'
     ],
     'components' => [
+        'doctrine' => [
+            'class' => 'app\components\Doctrine',
+            'isDevMode' => YII_DEBUG,
+            'paths' => '@app/domain/entities',
+            'cache' => null,
+            'dbParams' => [
+                'driver' => 'pgsql',
+                'user' => 'postgres',
+                'password' => 'superPassword',
+                'dbname' => 'car_service',
+                'host' => 'database',
+            ],
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
