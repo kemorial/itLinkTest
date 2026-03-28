@@ -1,0 +1,16 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www/app
+    ports:
+      - '80:8080'
+  database:
+    image: postgres:18
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: superPassword
+      POSTGRES_DB: car_service
+
