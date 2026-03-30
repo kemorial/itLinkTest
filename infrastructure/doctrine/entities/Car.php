@@ -1,13 +1,13 @@
 <?php
 
-namespace Insfrastructure\Doctrine\Entities;
+namespace app\infrastructure\doctrine\entities;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\OneToOne;
+use Doctrine\ORM\Mapping\Table;
 
 #[Entity]
 #[Table(name: 'cars')]
@@ -16,7 +16,7 @@ class Car
     #[Id]
     #[GeneratedValue]
     #[Column(type: 'integer')]
-    private int|null $id = null;
+    private ?int $id = null;
 
     #[Column(type: 'string', length: 255, nullable: false)]
     private string $title;
@@ -36,13 +36,6 @@ class Car
     #[OneToOne(mappedBy: 'car', targetEntity: CarOption::class, cascade: ['persist', 'remove'])]
     private ?CarOption $options = null;
 
-    public function __construct()
-    {
-        // Инициализация не нужна
-    }
-
-    // Getters and Setters
-
     public function getId(): ?int
     {
         return $this->id;
@@ -56,6 +49,7 @@ class Car
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -67,6 +61,7 @@ class Car
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -78,6 +73,7 @@ class Car
     public function setPrice(float $price): self
     {
         $this->price = $price;
+
         return $this;
     }
 
@@ -89,6 +85,7 @@ class Car
     public function setPhotoUrl(?string $photoUrl): self
     {
         $this->photoUrl = $photoUrl;
+
         return $this;
     }
 
@@ -100,6 +97,7 @@ class Car
     public function setContacts(string $contacts): self
     {
         $this->contacts = $contacts;
+
         return $this;
     }
 
@@ -114,11 +112,7 @@ class Car
         if ($options !== null && $options->getCar() !== $this) {
             $options->setCar($this);
         }
-        return $this;
-    }
 
-    public function hasOptions(): bool
-    {
-        return $this->options !== null;
+        return $this;
     }
 }

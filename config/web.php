@@ -11,7 +11,7 @@ $config = [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
-        '@entities' => '@app/domain/entities',
+        '@entities' => '@app/infrastructure/doctrine/entities',
     ],
     'components' => [
         'request' => [
@@ -51,9 +51,9 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'POST car/create' => 'car/create',
-                'GET car/<id:\\d+>' => 'car/view',
-                'GET car/list' => 'car/list',
+                'POST api/car/create' => 'car/create',
+                'GET api/car/<id:\\d+>' => 'car/view',
+                'GET api/car/list' => 'car/list',
             ],
         ],
     ],
@@ -65,7 +65,6 @@ $config = [
                 $config = \Doctrine\ORM\ORMSetup::createAttributeMetadataConfiguration(
                     $paths,
                     YII_DEBUG,
-                    Yii::getAlias('@runtime/doctrine/proxies')
                 );
 
                 $connection = [
@@ -77,6 +76,12 @@ $config = [
                 ];
 
                 return \Doctrine\ORM\EntityManager::create($connection, $config);
+            },
+            \app\domain\repositories\CarRepositoryInterface::class => \app\infrastructure\doctrine\repositories\DoctrineCarRepository::class,
+            \app\application\services\CarService::class => function (\yii\di\Container $container) {
+                return new \app\application\services\CarService(
+                    $container->get(\app\domain\repositories\CarRepositoryInterface::class)
+                );
             },
         ],
     ],

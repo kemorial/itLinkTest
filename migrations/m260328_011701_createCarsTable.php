@@ -16,8 +16,8 @@ class m260328_011701_createCarsTable extends Migration
             'id' => $this->primaryKey(),
             'title' => $this->string(255)->notNull(),
             'description' => $this->text()->notNull(),
-            'price' => $this->integer()->notNull(),
-            'photo_url' => $this->string(255)->notNull(),
+            'price' => $this->decimal(10, 2)->notNull(),
+            'photo_url' => $this->string(500)->null(),
             'contacts' => $this->string(255)->notNull(),
         ]);
         $this->createTable('{{%car_options}}', [

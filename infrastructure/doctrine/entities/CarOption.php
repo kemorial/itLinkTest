@@ -1,6 +1,6 @@
 <?php
 
-namespace Insfrastructure\Doctrine\Entities;
+namespace app\infrastructure\doctrine\entities;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -17,28 +17,28 @@ class CarOption
     #[Id]
     #[GeneratedValue]
     #[Column(type: 'integer')]
-    private int|null $id = null;
+    private ?int $id = null;
 
     #[OneToOne(targetEntity: Car::class, inversedBy: 'options')]
     #[JoinColumn(name: 'car_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private Car $car;
 
     #[Column(type: 'string', length: 255, nullable: false)]
-    private string $brand;
+    private ?string $brand = null;
 
     #[Column(type: 'string', length: 255, nullable: false)]
-    private string $model;
+    private ?string $model = null;
 
     #[Column(type: 'integer', nullable: false)]
-    private int $year;
+    private ?int $year = null;
 
     #[Column(type: 'string', length: 255, nullable: false)]
-    private string $body;
+    private ?string $body = null;
 
     #[Column(type: 'integer', nullable: false)]
-    private int $mileage;
+    private ?int $mileage = null;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -54,61 +54,67 @@ class CarOption
         if ($car->getOptions() !== $this) {
             $car->setOptions($this);
         }
+
         return $this;
     }
 
-    public function getBrand(): string
+    public function getBrand(): ?string
     {
         return $this->brand;
     }
 
-    public function setBrand(string $brand): self
+    public function setBrand(?string $brand): self
     {
         $this->brand = $brand;
+
         return $this;
     }
 
-    public function getModel(): string
+    public function getModel(): ?string
     {
         return $this->model;
     }
 
-    public function setModel(string $model): self
+    public function setModel(?string $model): self
     {
         $this->model = $model;
+
         return $this;
     }
 
-    public function getYear(): int
+    public function getYear(): ?int
     {
         return $this->year;
     }
 
-    public function setYear(int $year): self
+    public function setYear(?int $year): self
     {
         $this->year = $year;
+
         return $this;
     }
 
-    public function getBody(): string
+    public function getBody(): ?string
     {
         return $this->body;
     }
 
-    public function setBody(string $body): self
+    public function setBody(?string $body): self
     {
         $this->body = $body;
+
         return $this;
     }
 
-    public function getMileage(): int
+    public function getMileage(): ?int
     {
         return $this->mileage;
     }
 
-    public function setMileage(int $mileage): self
+    public function setMileage(?int $mileage): self
     {
         $this->mileage = $mileage;
+
         return $this;
     }
 }

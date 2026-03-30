@@ -1,6 +1,5 @@
 <?php
 
-use app\components\Doctrine;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMSetup;
@@ -17,7 +16,7 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
         '@tests' => '@app/tests',
-        '@entities' => '@app/domain/entities'
+        '@entities' => '@app/infrastructure/doctrine/entities'
     ],
     'components' => [
         'cache' => [
@@ -36,7 +35,7 @@ $config = [
     'container' => [
         'singletons' => [
             EntityManagerInterface::class => function () {
-                $paths = [Yii::getAlias('@app/domain/entities')];
+                $paths = [Yii::getAlias('@entities')];
 
                 $config = ORMSetup::createAttributeMetadataConfiguration(
                     $paths,
@@ -53,6 +52,12 @@ $config = [
                 ];
 
                 return EntityManager::create($connection, $config);
+            },
+            \app\domain\repositories\CarRepositoryInterface::class => \app\infrastructure\doctrine\repositories\DoctrineCarRepository::class,
+            \app\application\services\CarService::class => function (\yii\di\Container $container) {
+                return new \app\application\services\CarService(
+                    $container->get(\app\domain\repositories\CarRepositoryInterface::class)
+                );
             },
         ],
     ],
