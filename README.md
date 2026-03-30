@@ -28,7 +28,7 @@ REST API для публикации и просмотра объявлений 
 - `title` - string
 - `description` - string
 - `price` - decimal(10,2), в API передаётся строкой
-- `photo_url` - string
+- `photo_url` - string|null
 - `contacts` - string
 - `created_at` - datetime, ISO 8601
 - `options` - object|null
@@ -50,6 +50,8 @@ REST API для публикации и просмотра объявлений 
 ### 1. Создать объявление
 
 `POST /api/car/create`
+
+`photo_url` в запросе необязателен.
 
 #### Request body
 

@@ -7,7 +7,7 @@ FROM php:8.4-fpm
 
 WORKDIR /var/www/app
 
-COPY --from=composer /app/vendor .
+COPY --from=composer /app/vendor ./vendor
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 RUN install-php-extensions \
     pdo_pgsql \
@@ -15,9 +15,9 @@ RUN install-php-extensions \
     && docker-php-ext-enable pdo_pgsql pgsql \
     && rm -rf /var/lib/apt/lists/* 
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY --chmod=755 entrypoint.sh /entrypoint.sh
+RUN sed -i 's/\r$//' /entrypoint.sh
 
 COPY . .
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/entrypoint.sh"]
