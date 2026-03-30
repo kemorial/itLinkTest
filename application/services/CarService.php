@@ -9,6 +9,7 @@ use app\domain\models\Car;
 use app\domain\models\CarOption;
 use app\domain\repositories\CarRepositoryInterface;
 use app\domain\services\CarServiceInterface;
+use DateTimeImmutable;
 
 class CarService implements CarServiceInterface
 {
@@ -43,6 +44,7 @@ class CarService implements CarServiceInterface
             $dto->price,
             $dto->photoUrl,
             $dto->contacts,
+            new DateTimeImmutable(),
             $this->mapOptionFromDTO($dto->options)
         );
 
@@ -89,6 +91,7 @@ class CarService implements CarServiceInterface
             $car->getPrice(),
             $car->getPhotoUrl(),
             $car->getContacts(),
+            $car->getCreatedAt(),
             $this->mapOptionToDTO($car->getOptions())
         );
     }

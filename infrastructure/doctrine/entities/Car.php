@@ -2,6 +2,7 @@
 
 namespace app\infrastructure\doctrine\entities;
 
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
@@ -25,13 +26,16 @@ class Car
     private string $description;
 
     #[Column(type: 'decimal', precision: 10, scale: 2, nullable: false)]
-    private float $price;
+    private string $price;
 
     #[Column(name: 'photo_url', type: 'string', length: 500, nullable: true)]
     private ?string $photoUrl = null;
 
     #[Column(type: 'string', length: 255, nullable: false)]
     private string $contacts;
+
+    #[Column(name: 'created_at', type: 'datetime_immutable', nullable: false)]
+    private DateTimeImmutable $createdAt;
 
     #[OneToOne(mappedBy: 'car', targetEntity: CarOption::class, cascade: ['persist', 'remove'])]
     private ?CarOption $options = null;
@@ -65,12 +69,12 @@ class Car
         return $this;
     }
 
-    public function getPrice(): float
+    public function getPrice(): string
     {
         return $this->price;
     }
 
-    public function setPrice(float $price): self
+    public function setPrice(string $price): self
     {
         $this->price = $price;
 
@@ -97,6 +101,18 @@ class Car
     public function setContacts(string $contacts): self
     {
         $this->contacts = $contacts;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

@@ -20,38 +20,49 @@ class DoctrineCarRepository implements CarRepositoryInterface
 
     public function save(DomainCar $car): DomainCar
     {
-        $entity = $car->getId() === null
-            ? new Car()
-            : $this->entityManager->find(Car::class, $car->getId());
+        $connection = $this->entityManager->getConnection();
+        $connection->beginTransaction();
 
-        if ($entity === null) {
-            $entity = new Car();
+        try {
+            $entity = $car->getId() === null
+                ? new Car()
+                : $this->entityManager->find(Car::class, $car->getId());
+
+            if ($entity === null) {
+                $entity = new Car();
+            }
+
+            $entity
+                ->setTitle($car->getTitle())
+                ->setDescription($car->getDescription())
+                ->setPrice($car->getPrice())
+                ->setPhotoUrl($car->getPhotoUrl())
+                ->setContacts($car->getContacts())
+                ->setCreatedAt($car->getCreatedAt());
+
+            $option = $car->getOptions();
+            if ($option !== null) {
+                $optionEntity = $entity->getOptions() ?? new CarOption();
+                $optionEntity
+                    ->setCar($entity)
+                    ->setBrand($option->getBrand())
+                    ->setModel($option->getModel())
+                    ->setYear($option->getYear())
+                    ->setBody($option->getBody())
+                    ->setMileage($option->getMileage());
+                $entity->setOptions($optionEntity);
+            }
+
+            $this->entityManager->persist($entity);
+            $this->entityManager->flush();
+            $connection->commit();
+
+            return $this->mapToDomain($entity);
+        } catch (\Throwable $exception) {
+            $connection->rollBack();
+
+            throw $exception;
         }
-
-        $entity
-            ->setTitle($car->getTitle())
-            ->setDescription($car->getDescription())
-            ->setPrice($car->getPrice())
-            ->setPhotoUrl($car->getPhotoUrl())
-            ->setContacts($car->getContacts());
-
-        $option = $car->getOptions();
-        if ($option !== null) {
-            $optionEntity = $entity->getOptions() ?? new CarOption();
-            $optionEntity
-                ->setCar($entity)
-                ->setBrand($option->getBrand())
-                ->setModel($option->getModel())
-                ->setYear($option->getYear())
-                ->setBody($option->getBody())
-                ->setMileage($option->getMileage());
-            $entity->setOptions($optionEntity);
-        }
-
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-
-        return $this->mapToDomain($entity);
     }
 
     public function findById(int $id): ?DomainCar
@@ -106,6 +117,7 @@ class DoctrineCarRepository implements CarRepositoryInterface
             $entity->getPrice(),
             $entity->getPhotoUrl(),
             $entity->getContacts(),
+            $entity->getCreatedAt(),
             $option === null ? null : new DomainCarOption(
                 $option->getId(),
                 $option->getBrand(),

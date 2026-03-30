@@ -6,7 +6,7 @@ class CreateCarDTO
 {
     public string $title;
     public string $description;
-    public float $price;
+    public string $price;
     public ?string $photoUrl;
     public string $contacts;
     public ?CarOptionDTO $options;
@@ -14,7 +14,7 @@ class CreateCarDTO
     public function __construct(
         string $title,
         string $description,
-        float $price,
+        string $price,
         ?string $photoUrl,
         string $contacts,
         ?CarOptionDTO $options = null

@@ -24,6 +24,7 @@ class CarDTO
             'price' => $this->dto->price,
             'photo_url' => $this->dto->photoUrl,
             'contacts' => $this->dto->contacts,
+            'created_at' => $this->dto->createdAt->format(DATE_ATOM),
             'options' => $options === null ? null : [
                 'brand' => $options->brand,
                 'model' => $options->model,
