@@ -3,6 +3,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    entrypoint: ["/entrypoint.sh"]
+    depends_on:
+      database:
+        condition: service_healthy
     volumes:
       - ./:/var/www/app
     ports:
@@ -13,4 +17,10 @@ services:
     environment:
       POSTGRES_PASSWORD: superPassword
       POSTGRES_DB: car_service
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d car_service"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
 

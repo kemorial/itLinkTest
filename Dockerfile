@@ -15,6 +15,9 @@ RUN install-php-extensions \
     && docker-php-ext-enable pdo_pgsql pgsql \
     && rm -rf /var/lib/apt/lists/* 
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 COPY . .
 
-CMD [ "/var/www/app/yii","serve","0.0.0.0"]
+ENTRYPOINT ["/entrypoint.sh"]
